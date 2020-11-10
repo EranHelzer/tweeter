@@ -1,6 +1,6 @@
-import { pool } from '../config/db';
+const { pool } = require('../config/db');
 
-export const create = async (req, res) => {
+const create = async (req, res) => {
     if (!req.body.content || !req.body.username) {
         res.status(400).send({ message: "Missing body content!" });
         return;
@@ -21,14 +21,14 @@ export const create = async (req, res) => {
     }
 };
 
-export const findAll = (req, res) => {
+const findAll = async (req, res) => {
     try {
         const client = await pool.connect();
 
-        const sql = 'SELECT id, content, username, create_date as timestamp, li.count as likes_count, re.count as retweet_count \
+        const sql = 'SELECT id, content, username, create_date as timestamp, coalesce(li.count, 0) as likes_count, coalesce(re.count, 0) as retweet_count \
             FROM tweets tw \
-            JOIN (SELECT tweet_id, COUNT(*) FROM likes GROUP BY tweet_id) li ON tw.id = li.tweet_id \
-            JOIN (SELECT tweet_id, COUNT(*) FROM retweets GROUP BY tweet_id) re ON tw.id = re.tweet_id';
+            LEFT JOIN (SELECT tweet_id, COUNT(*) FROM likes GROUP BY tweet_id) li ON tw.id = li.tweet_id \
+            LEFT JOIN (SELECT tweet_id, COUNT(*) FROM retweets GROUP BY tweet_id) re ON tw.id = re.tweet_id';
         const { rows } = await client.query(sql);
         
         client.release();
@@ -38,3 +38,8 @@ export const findAll = (req, res) => {
         res.status(400).send(error);
     }
 };
+
+module.exports = {
+    create,
+    findAll
+}

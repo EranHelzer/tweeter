@@ -1,11 +1,11 @@
-import express from 'express';
-import loaders from './loaders';
-import { port } from './config';
+const express = require('express');
+const loaders = require('./loaders');
+const { port } = require('./config');
 
 async function startServer() {
   const app = express();
 
-  await loaders.init({ app });
+  await loaders({ app });
 
   app.listen(port, err => {
     if (err) {

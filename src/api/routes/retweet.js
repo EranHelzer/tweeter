@@ -1,6 +1,6 @@
-import { create, findAll } from '../../controllers/retweet';
+const { create, findAll } = require('../../controllers/retweet');
 
-export default (app) => {
+module.exports = (app) => {
   app.get('/retweets', (req, res) => {
     findAll(req, res);
   });

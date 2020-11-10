@@ -1,6 +1,6 @@
-import { pool } from '../config/db.config';
+const { pool } = require('../config/db');
 
-export const create = async (req, res) => {
+const create = async (req, res) => {
     if (!req.body.username) {
         res.status(400).send({ message: "Missing body content!" });
         return;
@@ -23,12 +23,13 @@ export const create = async (req, res) => {
     }
 };
 
-export const findAll = (req, res) => {
+const findAll = async (req, res) => {
     try {
         const client = await pool.connect();
 
         const sql = 'SELECT tw.content, re.username retweet_user, re.tweet_id, tw.username as tweet_user, re.create_date as timestamp \
-            FROM retweets re JOIN tweets tw ON re.tweet_id = tw.id';
+            FROM retweets re \
+            LEFT JOIN tweets tw ON re.tweet_id = tw.id';
         const { rows } = await client.query(sql);
         
         client.release();
@@ -38,3 +39,8 @@ export const findAll = (req, res) => {
         res.status(400).send(error);
     }
 };
+
+module.exports = {
+    create,
+    findAll
+}

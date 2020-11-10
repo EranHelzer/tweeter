@@ -1,6 +1,6 @@
-import { create } from '../../controllers/like';
+const { create } = require('../../controllers/like');
 
-export default (app) => {
+module.exports = (app) => {
   app.post('/tweets/:id/likes', (req, res) => {
     create(req, res);
   });

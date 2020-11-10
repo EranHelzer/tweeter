@@ -1,9 +1,9 @@
-import { Router } from 'express';
-import like from './routes/like';
-import retweet from './routes/retweet';
-import tweet from './routes/tweet';
+const { Router } = require('express');
+const like = require('./routes/like');
+const retweet = require('./routes/retweet');
+const tweet = require('./routes/tweet');
 
-export default () => {
+module.exports = () => {
 	const app = Router();
 	like(app);
 	retweet(app);

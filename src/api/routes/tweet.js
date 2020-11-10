@@ -1,11 +1,11 @@
-import { create, findAll } from '../../controllers/tweet';
+const { create, findAll } = require('../../controllers/tweet');
 
-export default (app) => {
+module.exports = (app) => {
   app.get('/tweets', (req, res) => {
     findAll(req, res);
   });
 
-  route.post('/tweets', (req, res) => {
+  app.post('/tweets', (req, res) => {
     create(req, res);
   });
 };

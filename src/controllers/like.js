@@ -1,6 +1,6 @@
-import { pool } from '../config/db.config';
+const { pool } = require('../config/db');
 
-export const create = async (req, res) => {
+const create = async (req, res) => {
     if (!req.body.username) {
         res.status(400).send({ message: "Missing body content!" });
         return;
@@ -22,3 +22,7 @@ export const create = async (req, res) => {
         res.status(400).send(error);
     }
 };
+
+module.exports = {
+    create
+}
