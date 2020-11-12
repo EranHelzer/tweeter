@@ -1,10 +1,8 @@
-FROM node:12.18.1
+FROM node:14-alpine
 
-WORKDIR /app
+WORKDIR /usr/app
 COPY ["package.json", "package-lock.json*", "./"]
-
-RUN npm install 
-
+RUN npm install --quiet
 COPY . .
+
 EXPOSE 8626
-CMD npm start

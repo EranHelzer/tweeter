@@ -6,21 +6,21 @@ CREATE TABLE tweets (
     id SERIAL PRIMARY KEY,
     content VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
-    createDate TIMESTAMP NOT NULL DEFAULT NOW()
+    create_date TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE likes (
     id SERIAL PRIMARY KEY,
-    tweetId INT,
+    tweet_id INT,
     username VARCHAR(255) NOT NULL,
-    createDate TIMESTAMP NOT NULL DEFAULT NOW(),
-    CONSTRAINT fk_tweet FOREIGN KEY(tweetId) REFERENCES tweets(id)
+    create_date TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_tweet FOREIGN KEY(tweet_id) REFERENCES tweets(id)
 );
 
-CREATE TABLE retweet (
+CREATE TABLE retweets (
     id SERIAL PRIMARY KEY,
-    tweetId INT,
+    tweet_id INT,
     username VARCHAR(255) NOT NULL,
-    createDate TIMESTAMP NOT NULL DEFAULT NOW(),
-    CONSTRAINT fk_tweet FOREIGN KEY(tweetId) REFERENCES tweets(id)
+    create_date TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_tweet FOREIGN KEY(tweet_id) REFERENCES tweets(id)
 );
