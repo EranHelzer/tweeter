@@ -1,23 +1,15 @@
-const { pool } = require('../config/db');
+const { db } = require('../config/db');
 
 const create = async (req, res) => {
-    if (!req.body.username) {
-        res.status(400).send({ message: "Missing body content!" });
-        return;
-    }
-
     const tweetId = req.params.id;
+    const { username } = req.body;
 
     try {
-        const client = await pool.connect();
+        const retweet = await db
+            .insert({ tweet_id: tweetId, username })
+            .into('retweets').returning('*');
 
-        const sql = 'INSERT INTO retweets (tweetId, username) VALUES ($1, $2) RETURNING *';
-        const values = [tweetId, req.body.username];
-        const { rows } = await client.query(sql, values);
-        
-        client.release();
-
-        res.send(rows);
+        res.send(retweet);
     } catch (error) {
         res.status(400).send(error);
     }
@@ -25,16 +17,18 @@ const create = async (req, res) => {
 
 const findAll = async (req, res) => {
     try {
-        const client = await pool.connect();
+        const retweets = await db
+            .select({
+                content: 'tw.content',
+                retweet_user: 're.username',
+                tweet_id: 're.tweet_id',
+                tweet_user: 'tw.username',
+                timestamp: 're.create_date'
+            })
+            .from({ re: 'retweets' })
+            .leftJoin({ tw: 'tweets' }, 're.tweet_id', '=', 'tw.id');
 
-        const sql = 'SELECT tw.content, re.username retweet_user, re.tweet_id, tw.username as tweet_user, re.create_date as timestamp \
-            FROM retweets re \
-            LEFT JOIN tweets tw ON re.tweet_id = tw.id';
-        const { rows } = await client.query(sql);
-        
-        client.release();
-
-        res.send(rows);
+        res.send(retweets);
     } catch (error) {
         res.status(400).send(error);
     }

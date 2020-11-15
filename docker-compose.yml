@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     command: npm start
+    tty: true
     volumes:
       - .:/usr/app/
       - /usr/app/node_modules
@@ -15,7 +16,7 @@ services:
       - postgres
     environment: 
       NODE_ENV: production
-      DATABASE_URL: "postgres://${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_DATABASE}?sslmode=disable"
+      DATABASE_URL: "postgres://${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_DATABASE}"
   postgres:
     image: postgres
     volumes:

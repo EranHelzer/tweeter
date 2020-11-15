@@ -1,23 +1,15 @@
-const { pool } = require('../config/db');
+const { db } = require('../config/db');
 
 const create = async (req, res) => {
-    if (!req.body.username) {
-        res.status(400).send({ message: "Missing body content!" });
-        return;
-    }
-
     const tweetId = req.params.id;
+    const { username } = req.body;
 
     try {
-        const client = await pool.connect();
+        const like = await db
+            .insert({ tweet_id: tweetId, username })
+            .into('likes').returning('*');
 
-        const sql = 'INSERT INTO likes (tweetId, username) VALUES ($1, $2) RETURNING *';
-        const values = [tweetId, req.body.username];
-        const { rows } = await client.query(sql, values);
-        
-        client.release();
-
-        res.send(rows);
+        res.send(like);
     } catch (error) {
         res.status(400).send(error);
     }
